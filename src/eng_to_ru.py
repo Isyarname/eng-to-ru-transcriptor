@@ -64,7 +64,7 @@ def convert(text: str, custom_exceptions: dict = None, compiled_rules: list = No
     # === Подготовка правил (Ленивая инициализация и кэширование) ===
     if compiled_rules is None:
         RULES_JSON_PATH = BASE_DIR / "compiled_rules.json"
-        RULES_PY_PATH = BASE_DIR / "data" / "ipa_to_ru_rules.py"
+        RULES_PY_PATH = BASE_DIR / "data" / "transliteration_rules.py"
         
         if not RULES_JSON_PATH.exists():
             compiled_rules = _build_rules_infrastructure(RULES_PY_PATH, RULES_JSON_PATH)
@@ -74,7 +74,7 @@ def convert(text: str, custom_exceptions: dict = None, compiled_rules: list = No
 
     # === Подготовка словаря исключений ===
     if custom_exceptions is None:
-        DICT_PATH = BASE_DIR / "data" / "en_US.txt"
+        DICT_PATH = BASE_DIR / "data" / "en_dict.txt"
         custom_exceptions = _parse_ipa_dictionary(DICT_PATH)
 
     # === Вычислительное ядро ===
