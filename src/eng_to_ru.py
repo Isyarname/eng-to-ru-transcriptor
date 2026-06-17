@@ -17,10 +17,10 @@ def _build_rules_infrastructure(py_path: Path, json_path: Path) -> list:
     rules_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(rules_module)
     
-    raw_contractions = getattr(rules_module, "contractions", {})
+    raw_macros = getattr(rules_module, "macros", {})
     raw_rules_string = getattr(rules_module, "rules", "")
     
-    prepared_rules = compiler.compile(raw_rules_string, raw_contractions)
+    prepared_rules = compiler.compile(raw_rules_string, raw_macros)
     
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(prepared_rules, f, ensure_ascii=False, indent=4)

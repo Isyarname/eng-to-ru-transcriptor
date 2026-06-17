@@ -13,13 +13,13 @@ def parse(rules_str: str, transition_symbol="->") -> list:
         prepared_rules.extend(list(matches))
     return prepared_rules
 
-def expand_contractions(rule: list, contractions: dict) -> list:
-    items = contractions.items() if isinstance(contractions, dict) else contractions
-    sorted_contractions = sorted(items, key=lambda e: -len(e[0]))
+def expand_macros(rule: list, macros: dict) -> list:
+    items = macros.items() if isinstance(macros, dict) else macros
+    sorted_macros = sorted(items, key=lambda e: -len(e[0]))
     
     new_rule = []
     for part in rule:
-        for old, new in sorted_contractions:
+        for old, new in sorted_macros:
             if isinstance(new, set):
                 new = f"[{''.join(sorted(new))}]"
             if isinstance(new, str):
@@ -84,7 +84,7 @@ def add_capitalized_pairs(pairs: list) -> list:
             capitalized.append((L_cap, R_cap))
     return capitalized + pairs
 
-def compile(rules_str: str, contractions: dict, add_capitalized=True) -> list:
+def compile(rules_str: str, macros: dict, add_capitalized=True) -> list:
     """
     🌟 ГЛАВНАЯ ЧИСТАЯ ФУНКЦИЯ МОДУЛЯ.
     Принимает сырую строку правил и словарь макросов. 
@@ -92,8 +92,8 @@ def compile(rules_str: str, contractions: dict, add_capitalized=True) -> list:
     """
     parsed_pairs = parse(rules_str)
     
-    if contractions:
-        parsed_pairs = [expand_contractions(pair, contractions) for pair in parsed_pairs]
+    if macros:
+        parsed_pairs = [expand_macros(pair, macros) for pair in parsed_pairs]
         
     expanded_rules = []
     for pair in parsed_pairs:
