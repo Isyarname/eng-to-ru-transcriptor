@@ -35,6 +35,7 @@ env/
 # Временные тестовые файлы
 diagnose.py
 test_manual.py
+test.py
 test_*.py
 !tests/test_*.py
 
