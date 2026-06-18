@@ -15,12 +15,6 @@ pip install pytest
 pytest
 ```
 
-## Стиль кода
-
-- Python 3.9+
-- Type hints во всех публичных функциях
-- Docstrings в Google-стиле
-
 ## Как добавить новое правило транслитерации
 
 1. Откройте `src/eng_to_ru_transcriptor/data/transliteration_rules.py`
