@@ -16,9 +16,16 @@ Python-библиотека для автоматической транскри
 
 ## 🚀 Установка
 
+### Из исходников (пока пакет не опубликован на PyPI)
+
 ```bash
-pip install eng-to-ru-transcriptor
+git clone https://github.com/Isyarname/eng-to-ru-transcriptor
+cd eng-to-ru-transcriptor
+pip install -e .
 ```
+
+Флаг `-e` (editable) устанавливает пакет в режиме разработки — изменения в коде применяются сразу без переустановки.
+
 
 ## 💻 Использование
 

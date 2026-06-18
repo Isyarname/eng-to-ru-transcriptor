@@ -32,6 +32,12 @@ env/
 *.swo
 *~
 
+# Временные тестовые файлы
+diagnose.py
+test_manual.py
+test_*.py
+!tests/test_*.py
+
 # Проектные файлы
 output_text.txt
 compiled_rules.json
