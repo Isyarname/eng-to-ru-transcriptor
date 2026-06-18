@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eng-to-ru-transcriptor"
+version = "0.1.0"
+description = "Гибридный движок транслитерации английского текста кириллицей"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Isyarname" }]
+keywords = ["transliteration", "phonetics", "english", "russian", "ipa", "g2p"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+    "Natural Language :: English",
+    "Natural Language :: Russian",
+]
+dependencies = [
+    "gruut>=2.4.0",
+    "eng-to-ipa>=0.0.2",
+    "platformdirs>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Isyarname/eng-to-ru-transcriptor"
+Repository = "https://github.com/Isyarname/eng-to-ru-transcriptor"
+Issues = "https://github.com/Isyarname/eng-to-ru-transcriptor/issues"
+
+# src-layout: setuptools ищет пакеты внутри src/
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Включаем текстовые ресурсы (словари, DSL-правила, нормализации) в wheel
+[tool.setuptools.package-data]
+"eng_to_ru_transcriptor" = ["data/*.txt", "data/*.py"]
