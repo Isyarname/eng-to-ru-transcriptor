@@ -1,4 +1,4 @@
-# Фонетический транскриптор английского языка в русский 🔤
+# Транскриптор английских слов в русскую кириллицу 🔤
 
 [Read in English](https://github.com/Isyarname/eng-to-ru-transcriber/blob/main/README.md)
 
