@@ -37,6 +37,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/Isyarname/eng-to-ru-transcriber"
 Repository = "https://github.com/Isyarname/eng-to-ru-transcriber"
+Changelog = "https://github.com/Isyarname/eng-to-ru-transcriber/blob/main/docs/CHANGELOG.md"
 Issues = "https://github.com/Isyarname/eng-to-ru-transcriber/issues"
 
 # src-layout: setuptools ищет пакеты внутри src/

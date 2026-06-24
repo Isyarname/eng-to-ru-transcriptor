@@ -37,12 +37,12 @@ t = Transcriber(custom_vocabulary={"kubernetes": "ˈkuːbərˌnɛtɪs"})
 t.transcribe("text")
 ```
 
-## [0.1.1] - 2025-XX-XX
+## [0.1.1] - 2026-06-XX
 
 > **Note:** Details for this release were not preserved.
 > Run `git log v0.1.0..v0.1.1 --oneline` to see the commits.
 
-## [0.1.0] - 2025-XX-XX
+## [0.1.0] - 2026-06-XX
 
 ### Added
 - Initial release

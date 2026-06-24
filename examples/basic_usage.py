@@ -23,10 +23,10 @@ def run_pipeline() -> None:
         "python": "ˈpaɪθɑn",
         "docker": "ˈdɑkər",
     }
-    t = Transcriber(custom_exceptions=custom)
+    t = Transcriber(custom_vocabulary=custom)
     print(f"📦 Создан: {t}")
 
-    t.reload_transliteration()
+    t.reload_rules()
     result = t.transcribe(raw_text)
     print(f"📦 После транслитерации: {t}")
 

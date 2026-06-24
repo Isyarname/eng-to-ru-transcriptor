@@ -8,7 +8,7 @@ from pathlib import Path
 
 from platformdirs import user_cache_dir
 
-from . import compiler, ipa_to_ru, eng_to_ipa_hybrid
+from . import dsl_translator, ipa_to_ru, eng_to_ipa_hybrid
 
 
 _PACKAGE_DATA = resources.files("eng_to_ru_transcriber.data")
@@ -50,7 +50,7 @@ class Transcriber:
         Args:
             rules_path: Путь к правилам транслитерации. По умолчанию — ресурс пакета.
             dict_path: Путь к словарю исключений. По умолчанию — ресурс пакета.
-            cache_dir: Папка для кэша compiled_rules.json. По умолчанию — user_cache_dir.
+            cache_dir: Папка для кэша replacement_pairs.json. По умолчанию — user_cache_dir.
             custom_vocabulary: Пользовательский словарь (дополняет встроенный).
         """
         self._rules_path = rules_path or _default_rules_path()
@@ -59,7 +59,7 @@ class Transcriber:
         self._cache_dir.mkdir(parents=True, exist_ok=True)
 
         # Лениво загружаемые ресурсы
-        self._compiled_rules: list[tuple[str, str]] | None = None
+        self._replacement_pairs: list[tuple[str, str]] | None = None
         self._dict_cache: dict[str, str] | None = None
 
         # Пользовательский словарь (задаётся один раз при создании)
@@ -77,19 +77,19 @@ class Transcriber:
         Returns:
             Текст кириллицей.
         """
-        compiled_rules = self.get_compiled_rules()
+        replacement_pairs = self.get_replacement_pairs()
         vocabulary = self.get_vocabulary()
 
         ipa_text = eng_to_ipa_hybrid.transcribe(text, vocabulary)
-        return ipa_to_ru.convert(ipa_text, compiled_rules)
+        return ipa_to_ru.convert(ipa_text, replacement_pairs)
 
     # ─────────────────────────── Доступ к ресурсам ───────────────────────
 
-    def get_compiled_rules(self) -> list[tuple[str, str]]:
+    def get_replacement_pairs(self) -> list[tuple[str, str]]:
         """Возвращает скомпилированные правила (ленивая загрузка + кэш)."""
-        if self._compiled_rules is None:
-            self._compiled_rules = self._load_compiled_rules()
-        return self._compiled_rules
+        if self._replacement_pairs is None:
+            self._replacement_pairs = self._load_replacement_pairs()
+        return self._replacement_pairs
 
     def get_vocabulary(self) -> dict[str, str]:
         """
@@ -105,7 +105,7 @@ class Transcriber:
 
     def reload_rules(self) -> None:
         """Перекомпилирует правила транслитерации IPA → кириллица."""
-        self._compiled_rules = self._compile_rules_from_source()
+        self._replacement_pairs = self._translate_rules()
 
     def reload_dictionary(self) -> None:
         """Перечитывает встроенный словарь с диска."""
@@ -117,25 +117,25 @@ class Transcriber:
         self.reload_rules()
 
     def clear_cache(self) -> None:
-        """Удаляет JSON-кэш compiled_rules.json с диска."""
-        cache_file = self._cache_dir / "compiled_rules.json"
+        """Удаляет JSON-кэш replacement_pairs.json с диска."""
+        cache_file = self._cache_dir / "replacement_pairs.json"
         if cache_file.exists():
             cache_file.unlink()
-        self._compiled_rules = None
+        self._replacement_pairs = None
 
     # ─────────────────────────── Внутренние методы ───────────────────────
 
-    def _load_compiled_rules(self) -> list[tuple[str, str]]:
+    def _load_replacement_pairs(self) -> list[tuple[str, str]]:
         """Загружает правила из JSON-кэша или компилирует заново."""
-        cache_file = self._cache_dir / "compiled_rules.json"
+        cache_file = self._cache_dir / "replacement_pairs.json"
 
         if cache_file.exists():
             with open(cache_file, "r", encoding="utf-8") as f:
                 return [tuple(pair) for pair in json.load(f)]
 
-        return self._compile_rules_from_source()
+        return self._translate_rules()
 
-    def _compile_rules_from_source(self) -> list[tuple[str, str]]:
+    def _translate_rules(self) -> list[tuple[str, str]]:
         """Компилирует правила транслитерации из исходника и сохраняет в JSON-кэш."""
         if not self._rules_path.exists():
             raise FileNotFoundError(f"Файл правил не найден: {self._rules_path}")
@@ -150,13 +150,13 @@ class Transcriber:
         raw_macros = getattr(module, "macros", {})
         raw_rules = getattr(module, "rules", "")
 
-        compiled = compiler.compile_rules(raw_rules, raw_macros)
+        rules = dsl_translator.build_rules(raw_rules, raw_macros)
 
-        cache_file = self._cache_dir / "compiled_rules.json"
+        cache_file = self._cache_dir / "replacement_pairs.json"
         with open(cache_file, "w", encoding="utf-8") as f:
-            json.dump(compiled, f, ensure_ascii=False, indent=4)
+            json.dump(rules, f, ensure_ascii=False, indent=4)
 
-        return compiled
+        return rules
 
     @staticmethod
     def _parse_ipa_dictionary(dict_path: Path) -> dict[str, str]:
@@ -186,7 +186,7 @@ class Transcriber:
     def __repr__(self) -> str:
         return (
             f"Transcriber("
-            f"rules={'загружены' if self._compiled_rules else 'нет'}, "
+            f"rules={'загружены' if self._replacement_pairs else 'нет'}, "
             f"dict={'загружен' if self._dict_cache else 'нет'}"
             f")"
         )

@@ -84,7 +84,7 @@ def add_capitalized_pairs(pairs: list) -> list:
             capitalized.append((L_cap, R_cap))
     return capitalized + pairs
 
-def compile_rules(rules_str: str, macros: dict, add_capitalized=True) -> list:
+def build_rules(rules_str: str, macros: dict, add_capitalized=True) -> list:
     """
     🌟 ГЛАВНАЯ ЧИСТАЯ ФУНКЦИЯ МОДУЛЯ.
     Принимает сырую строку правил и словарь макросов. 

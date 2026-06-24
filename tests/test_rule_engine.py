@@ -1,7 +1,7 @@
-"""Unit-тесты для transducer.py."""
+"""Unit-тесты для rule_engine.py."""
 import pytest
 
-from eng_to_ru_transcriber.transducer import apply_rules, process_text, HAS_REGEX_SYMBOLS
+from eng_to_ru_transcriber.rule_engine import apply_rules, process_text, HAS_REGEX_SYMBOLS
 
 
 class TestHasRegexSymbols:

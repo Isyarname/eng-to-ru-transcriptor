@@ -1,14 +1,14 @@
-"""Unit-тесты для compiler.py."""
+"""Unit-тесты для dsl_translator.py."""
 import pytest
 
-from eng_to_ru_transcriber.compiler import (
+from eng_to_ru_transcriber.dsl_translator import (
     parse,
     expand_macros,
     replace_brackets,
     expand,
     is_capitalizable_letter,
     add_capitalized_pairs,
-    compile_rules,
+    build_rules,
 )
 
 
@@ -133,23 +133,23 @@ class TestAddCapitalizedPairs:
         assert result[0] == ("ɑbc", "xyz")
 
 
-class TestCompileRules:
+class TestDsl_traNslatorules:
     """Интеграционный тест полной компиляции."""
 
     def test_full_pipeline(self):
         rules_str = "a -> x\nb -> y"
-        result = compile_rules(rules_str, macros={}, add_capitalized=False)
+        result = build_rules(rules_str, macros={}, add_capitalized=False)
         assert result == [("a", "x"), ("b", "y")]
 
     def test_with_macros(self):
         rules_str = "V -> а"
         macros = {"V": {"a", "e"}}
-        result = compile_rules(rules_str, macros, add_capitalized=False)
+        result = build_rules(rules_str, macros, add_capitalized=False)
         # Должно развернуться в две строки
         assert len(result) == 2
 
     def test_with_capitalized(self):
         rules_str = "a -> x"
-        result = compile_rules(rules_str, macros={}, add_capitalized=True)
+        result = build_rules(rules_str, macros={}, add_capitalized=True)
         assert ("A", "X") in result
         assert ("a", "x") in result
