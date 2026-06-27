@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-27
+
+### Changed
+- Replaced `gruut` library with built-in rule-based transcription engine
+- Built-in dictionary converted from text format to pickle for faster loading
+
+### Performance
+- Significantly faster library startup (no external dependency loading)
+- Dictionary loading time reduced from ~200-400ms to ~20-50ms
+- More accurate English-to-IPA transcription with custom rules
+
+### Removed
+- `gruut` dependency (no longer needed)
+
 ## [0.2.0] - 2026-06-20
 
 ### Removed
@@ -40,7 +54,6 @@ t.transcribe("text")
 ## [0.1.1] - 2026-06-XX
 
 > **Note:** Details for this release were not preserved.
-> Run `git log v0.1.0..v0.1.1 --oneline` to see the commits.
 
 ## [0.1.0] - 2026-06-XX
 
@@ -52,8 +65,3 @@ t.transcribe("text")
 - Custom vocabulary support via `custom_exceptions` parameter
 - Lazy loading of `gruut` for faster startup
 - Rule caching in `user_cache_dir`
-
-[Unreleased]: https://github.com/Isyarname/eng-to-ru-transcriber/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/Isyarname/eng-to-ru-transcriber/compare/v0.1.1...v0.2.0
-[0.1.1]: https://github.com/Isyarname/eng-to-ru-transcriber/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/Isyarname/eng-to-ru-transcriber/releases/tag/v0.1.0

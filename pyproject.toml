@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eng-to-ru-transcriber"
-version = "0.2.0"
+version = "0.2.1"
 description = "automatic English-to-Cyrillic text transcriber"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -25,7 +25,6 @@ classifiers = [
     "Natural Language :: Russian",
 ]
 dependencies = [
-    "gruut>=2.4.0",
     "platformdirs>=4.0.0",
 ]
 
@@ -46,4 +45,4 @@ where = ["src"]
 
 # Включаем текстовые ресурсы (словари, DSL-правила, нормализации) в wheel
 [tool.setuptools.package-data]
-"eng_to_ru_transcriber" = ["data/*.txt", "data/*.py"]
+"eng_to_ru_transcriber" = ["data/*.py", "data/*.pkl"]

@@ -11,7 +11,7 @@ This document describes the internal design of the library for developers and co
 [Tokenization: words + non-words]
        │
        │
-       │     [Built-in en_dict.txt]
+       │     [Built-in en_dict.pkl]
        │              │
        │     [Custom vocabulary]
        │              │
@@ -20,10 +20,10 @@ This document describes the internal design of the library for developers and co
        │
        ├── Found ────────────────► [IPA from dict] ───┐
        │                                              │
-       └── Not found ────────────► [gruut]            │
+       └── Not found ────────────► [rule_based_ipa]   │
                                         │             │
                                         ▼             │
-                                  [IPA from gruut] ───┘
+                                  [IPA from rules] ───┘
                                                       │
                                                       ▼
                                                 [IPA text]
@@ -35,7 +35,7 @@ This document describes the internal design of the library for developers and co
                                                       │
                                                       │
 [translated rules] ───────────────────────────────────┘
-        (from replacement_pairs.json cache)           │
+        (from transliteration_rules.json cache)           │
                                                       ▼
                               [IPA → Cyrillic transliteration]
                                         (rule_engine)
@@ -56,14 +56,14 @@ When `Transcriber()` is created, resources are **not loaded yet**. Only paths ar
 
 ### 2. First `transcribe()` call
 
-- **Rule compilation.** If `replacement_pairs.json` is missing from the cache, transliteration rules from `transliteration_rules.py` are parsed, macros are expanded, variants for uppercase letters are duplicated, and the result is saved to the JSON cache.
+- **Rule compilation.** If `transliteration_rules.json` is missing from the cache, transliteration rules from `transliteration_rules.py` are parsed, macros are expanded, variants for uppercase letters are duplicated, and the result is saved to the JSON cache.
 - **Dictionary loading.** `en_dict.txt` is read, parsed into `dict[str, str]`, and stored in `_dict_cache`.
 - **Dictionary merging.** Built-in + custom vocabulary (custom entries take priority).
 
 ### 3. Subsequent calls
 
-- translated rules and dictionary are taken from memory (`_replacement_pairs`, `_dict_cache`).
-- `gruut` is imported lazily — only when there are words missing from both dictionaries.
+- translated rules and dictionary are taken from memory (`_transliteration_rules`, `_dict_cache`).
+- rule_based_ipa.py — only when there are words missing from both dictionaries.
 
 ## 📂 Project structure
 
@@ -76,7 +76,7 @@ eng-to-ru-transcriber/
 │   ├── dsl_translator.py                   # Transliteration rules parser
 │   ├── rule_engine.py                      # Rule application engine
 │   ├── ipa_to_ru.py                        # IPA → Cyrillic bridge
-│   ├── eng_to_ipa_hybrid.py                # Dictionary + gruut (lazy import)
+│   ├── eng_to_ipa_hybrid.py                # Dictionary + rules 
 │   └── data/                               # Package resources (included in wheel)
 │       ├── __init__.py
 │       ├── en_dict.txt                     # Built-in dictionary
@@ -135,10 +135,6 @@ After `pip install`, the package lives in `site-packages/`, where the user has n
 - **Subscript** (`eɪ → ej`) — applied inside words.
 - **Whole-word** (`tə → tu`) — only for whole words, to avoid breaking `təmɔɹoʊ`.
 
-### Why is `gruut` imported lazily?
-
-`gruut` loads an ML model (~50-100 MB). If all words are in the built-in dictionary, `gruut` is never loaded, and package import takes milliseconds.
-
 ### Why is `transliteration_rules.py` a `.py`, not a `.txt`?
 
 Transliteration rules are conveniently expressed as Python variables (`macros`, `rules`). The file is loaded via `importlib.util.spec_from_file_location` — as data, not as part of the package. This lets the IDE hint the structure while keeping a clean code/data separation.
@@ -146,7 +142,7 @@ Transliteration rules are conveniently expressed as Python variables (`macros`, 
 ### Source rules vs translated rules
 
 - **Source rules** (`transliteration_rules.py`) — human-readable description with macros and bracket groups.
-- **translated rules** (`replacement_pairs.json`) — flat list of `(L, R)` pairs for fast application by the engine.
+- **translated rules** (`transliteration_rules.json`) — flat list of `(L, R)` pairs for fast application by the engine.
 
 Compilation happens once and is cached. When the source changes, call `reload_rules()`.
 

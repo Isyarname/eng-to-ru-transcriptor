@@ -35,7 +35,8 @@ def replace_brackets(text: str) -> str:
 
 def expand(rule: list[str]) -> list[tuple[str, str]]:
     rule1, rule2 = [replace_brackets(part) for part in rule]
-    pattern = r"\((?!\?)(.*?)\)"
+    pattern = r"\((?!\?)([^)]*)\)"
+    rule1, rule2 = rule1.replace("!(", "(?!"), rule2.replace("!(", "(?!")
     if "(" not in rule2:
         matches1 = re.findall(pattern, rule1)
         if len(matches1) == 1:
@@ -84,7 +85,7 @@ def add_capitalized_pairs(pairs: list) -> list:
             capitalized.append((L_cap, R_cap))
     return capitalized + pairs
 
-def build_rules(rules_str: str, macros: dict, add_capitalized=True) -> list:
+def build_rules(rules_str: str, macros: dict) -> list:
     """
     🌟 ГЛАВНАЯ ЧИСТАЯ ФУНКЦИЯ МОДУЛЯ.
     Принимает сырую строку правил и словарь макросов. 
@@ -98,8 +99,5 @@ def build_rules(rules_str: str, macros: dict, add_capitalized=True) -> list:
     expanded_rules = []
     for pair in parsed_pairs:
         expanded_rules.extend(expand(pair))
-        
-    if add_capitalized:
-        expanded_rules = add_capitalized_pairs(expanded_rules)
         
     return expanded_rules

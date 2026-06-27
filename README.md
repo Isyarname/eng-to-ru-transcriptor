@@ -2,7 +2,7 @@
 
 [Читать на русском языке](https://github.com/Isyarname/eng-to-ru-transcriber/blob/main/README.ru.md)
 
-A Python library for automatic English-to-Cyrillic text transcription using a hybrid engine: dictionary lookup and neural G2P (`gruut`) for unknown words.
+A Python library for automatic English-to-Cyrillic text transcription using a hybrid engine: dictionary lookup and rule-based transcription for unknown words.
 
 ## 💡 Features
 
@@ -11,7 +11,7 @@ A Python library for automatic English-to-Cyrillic text transcription using a hy
 
 ## ⚡ Key Highlights
 
-- **Two-tier lookup** — IPA via local 120k+ dict + neural G2P backup.
+- **Two-tier lookup** — IPA via local 120k+ dict + rule-based transcription backup.
 - **Graphemic adaptation** — Cyrillic matches Russian orthography.
 
 ## 🚀 Installation
